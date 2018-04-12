@@ -1,0 +1,5 @@
+---
+applications:
+- name: go-api
+  random-route: true
+  memory: 64M
