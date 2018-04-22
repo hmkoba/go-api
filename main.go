@@ -4,9 +4,12 @@ import (
 	"log"
 	"os"
 	"net/http"
+	"time"
+	"fmt"
 	"github.com/cloudfoundry-community/go-cfenv"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"github.com/line/line-bot-sdk-go/linebot"
 )
 
 import "github.com/timjacobi/go-couchdb"
@@ -100,10 +103,30 @@ func main() {
   })
 
   r.POST("/api/line/webhook", func(c *gin.Context) {
-		signature := c.GetHeader("X-Line-Signature")
+		client := &http.Client{Timeout: time.Duration(15 * time.Second)}
+		 bot, err := linebot.New("<Channel Secret>", "<Channel Access Token>", linebot.WithHTTPClient(client))
+		 if err != nil {
+				 fmt.Println(err)
+				 return
+		 }
+		 received, err := bot.ParseRequest(c.Request)
 
-		c.String(200, signature)
-	})
+		 for _, event := range received {
+				 if event.Type == linebot.EventTypeMessage {
+				     source := event.Source
+						 switch source.Type {
+						 case linebot.EventSourceTypeUser:
+							 log.Print("userId:" + source.UserID);
+
+						 case linebot.EventSourceTypeRoom:
+							 log.Print("userId:" + source.UserID + "  groupId:" +source.GroupID);
+
+						 case linebot.EventSourceTypeGroup:
+							 log.Print("userId:" + source.UserID + "  roomId:" + source.RoomID);
+						 }
+				 }
+		 }
+ })
 
 	//When running on Bluemix, get the PORT from the environment variable.
 	port := os.Getenv("PORT")
