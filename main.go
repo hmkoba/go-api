@@ -94,6 +94,17 @@ func main() {
     }
   })
 
+
+	r.GET("/api/line/test", func(c *gin.Context) {
+    c.String(200, "line test")
+  })
+
+  r.POST("/api/line/webhook", func(c *gin.Context) {
+		signature := c.GetHeader("X-Line-Signature")
+
+		c.String(200, signature)
+	})
+
 	//When running on Bluemix, get the PORT from the environment variable.
 	port := os.Getenv("PORT")
 	if port == "" {
