@@ -1,7 +1,7 @@
 all: test
 
 clean:
-	rm -f get-started-go
+	rm -f go-api
 
 install: prepare
 	godep go install

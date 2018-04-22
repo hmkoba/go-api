@@ -104,7 +104,7 @@ func main() {
 
   r.POST("/api/line/webhook", func(c *gin.Context) {
 		client := &http.Client{Timeout: time.Duration(15 * time.Second)}
-		 bot, err := linebot.New("<Channel Secret>", "<Channel Access Token>", linebot.WithHTTPClient(client))
+		 bot, err := linebot.New(<Channel Secret>, <アクセストークン>, linebot.WithHTTPClient(client))
 		 if err != nil {
 				 fmt.Println(err)
 				 return
